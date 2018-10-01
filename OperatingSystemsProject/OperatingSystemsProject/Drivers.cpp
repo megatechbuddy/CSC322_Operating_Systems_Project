@@ -1,3 +1,4 @@
+
 #include "stdafx.h"
 #include "Drivers.h"
 
@@ -7,84 +8,84 @@ Drivers::Drivers()
 	Word word;
 	word.letter1 = 66;
 	word.letter2 = 67;
-	WriteWord(10, word);
-	WriteWord(20, word);
+	WriteWord(0, word);
+	WriteWord(3, word);
 	//EraseSector(0);
 	//EraseAllSectors();
-	ReadWord(10);
-	ReadWord(20);
+	ReadWord(0);
+	ReadWord(3);
 }
 
-/*struct Drivers::Word {
-	unsigned char letter1;
-	unsigned char letter2;
-};*/
-
-bool Drivers::TestWordInput(int nAddress) {//TODO: is it actually a number
-	if (nAddress >= 0 && nAddress < TotalWordsOfMemory) {
-		return true;
+void Drivers::CreateMemory() {
+	std::ofstream outFile;
+	outFile.open(fileName, std::ios_base::app);
+	for (unsigned int i = 0; i < TotalBytesOfMemory; i++)
+	{
+		outFile.write(reinterpret_cast<char*>(&emptyByte), 1);
 	}
-	else {
-		std::cout << "Please use a valid nAddress instead of " << nAddress << "\n";
-		return false;
-	}
-}
-
-bool Drivers::TestSectorInput(int nSectorNr) {//TODO: is it actually a number
-	if (nSectorNr >= 0 && nSectorNr < TotalSectorsOfMemory) {
-		return true;
-	}
-	else {
-		std::cout << "Please use a valid nSectorNr instead of " << nSectorNr << "\n";
-		return false;
-	}
-	return true;
-}
-
-void Drivers::OpenFile() {
-	//https://stackoverflow.com/questions/4423361/constructing-a-vector-with-istream-iterators and modified their code
-	std::ifstream source(fileName, std::ios::binary);
-	std::vector<unsigned char> data((std::istreambuf_iterator<char>(source)), std::istreambuf_iterator<char>());
-	myvector = data;
-}
-
-void Drivers::SaveFile() {
-	//https://stackoverflow.com/questions/22876893/how-to-use-ostream-iterator-to-output-result-to-a-newfile and modified their code
-	std::ofstream of(fileName);
-	std::ostream_iterator<unsigned char> out_it(of, "");
-	std::copy(myvector.begin(), myvector.end(), out_it);
+	outFile.close();
+	std::cout << "Memory Created\n";	
 }
 
 void Drivers::EraseAllSectors() {
-	std::cout << "Erasing all sectors.\n";
-	for (int i = 0; i < TotalBytesOfMemory; ++i) myvector[i] = 255;//TODO: Check to see if this works 100% of the time.
-	SaveFile();
+	for (unsigned int i = 0; i < TotalSectorsOfMemory; i++)
+	{
+		EraseSector(i);
+	}
+	std::cout << "Erased all sectors..\n";
 }
 
-void Drivers::EraseSector(int nSectorNr) {
-	if (TestSectorInput(nSectorNr)) {
-		int beginning = nSectorNr * SectorSize;
-		int end = nSectorNr * SectorSize + SectorSize;
-		for (int i = beginning; i < end; ++i) myvector[i] = 255;
-		SaveFile();
+void Drivers::EraseSector(unsigned int nSectorNr) {
+	if (nSectorNr >= 0 && nSectorNr < TotalSectorsOfMemory) { 
+		std::fstream outFile(fileName); //TODO:used too many times
+		unsigned int beginning = SectorSize * nSectorNr;
+		unsigned int end = SectorSize * nSectorNr + SectorSize;
+		outFile.seekp(beginning, std::ios::beg);
+		for (unsigned int i = beginning; i < end; i++) //strategically used fstream here instead of using WriteWord for speed because fstream was opened too many times
+		{
+			outFile.write(reinterpret_cast<char*>(&emptyByte), 1);
+		}
+		outFile.close();
+	}
+	else {
+		std::cout << "Incorrect input for EraseSector\n";
+	}	
+}
+
+void Drivers::ReadWord(unsigned int wordAddress) {
+	if (wordAddress >= 0 && wordAddress < TotalWordsOfMemory) {
+		std::ifstream inFile; //TODO:used too many times
+		inFile.open(fileName, std::ios::binary);
+		unsigned int beginning = WordSize * wordAddress;
+		inFile.seekg(beginning, std::ios::beg);
+		char holderVariable;
+
+		inFile.read(&holderVariable,1);
+		Word word;
+		word.letter1 = (unsigned char)holderVariable;
+
+		inFile.read(&holderVariable, 1);
+		word.letter2 = (unsigned char)holderVariable;
+
+		inFile.close();
+		std::cout << "Word Binary at " << wordAddress << ": " << word.letter1 << word.letter2 << "\n";
+	}
+	else {
+		std::cout << "Please use a valid wordAddress instead of " << wordAddress << "\n";
 	}
 }
 
-void Drivers::ReadWord(int nAddress) {
-	if (TestWordInput(nAddress)) {
-		std::vector<unsigned char> v;
-		v.push_back(myvector[nAddress * 2]); //Note that a word is two bytes. That is the reason for nAddress * 2.
-		v.push_back(myvector[nAddress * 2 + 1]);
-		std::string str(v.begin(), v.end());
-		std::cout << "Word Binary at " << nAddress << ": " << str << "\n";
-	}
-}
-
-void Drivers::WriteWord(int nAddress, Word nWord) {
-	if (TestWordInput(nAddress)) {
-		myvector[nAddress * 2] = nWord.letter1;  //Note that a word is two bytes. That is the reason for nAddress * 2.
-		myvector[nAddress * 2 + 1] = nWord.letter2;
-		SaveFile();
+void Drivers::WriteWord(unsigned int wordAddress, Word nWord) {
+	if (wordAddress >= 0 && wordAddress < TotalWordsOfMemory) {
+		std::cout << "Writting Word: " << nWord.letter1 << nWord.letter2 << " sectors.  At address: "<< wordAddress<<"\n";
+		std::fstream outFile(fileName); //TODO:used too many times
+		unsigned int beginning = WordSize * wordAddress;
+		outFile.seekp(beginning, std::ios::beg);
+		outFile.write(reinterpret_cast<char*>(&nWord.letter1), 1);
+		outFile.write(reinterpret_cast<char*>(&nWord.letter2), 1);
+		outFile.close();
+	} else {
+		std::cout << "Please use a valid wordAddress instead of " << wordAddress << "\n";
 	}
 }
 
@@ -93,11 +94,11 @@ void Drivers::Initialize() {
 	if (ifile) {
 		std::cout << "File found at " + fileName << "\n";
 		std::cout << "Opening that file now. \n";
-		OpenFile();
 	}
 	else {
-		EraseAllSectors();
+		CreateMemory();
 	}
+	ifile.close();
 }
 
 Drivers::~Drivers()
