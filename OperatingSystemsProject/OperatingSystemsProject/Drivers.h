@@ -34,6 +34,9 @@ public:
 	Word ReadWord(unsigned int nAddress);
 	void WriteWord(unsigned int wordAddress, Word nWord);
 	void Initialize();
+
+	
+
 	~Drivers();
 };
 

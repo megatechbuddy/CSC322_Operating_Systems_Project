@@ -2,32 +2,37 @@
 #include "stdafx.h"
 #include "Block.h"
 
-Block::Block(unsigned int currentSectorNumber, unsigned int currentBlockNumber)
+Block::Block()
 {//TODO: Verify inputs
-	this->currentSectorNumber = currentSectorNumber;
-	this->currentBlockNumber = currentBlockNumber;
-	this->startWordLocation = GetStartLocationOfBlock(currentSectorNumber, currentBlockNumber);
-	this->endWordLocation = GetEndLocationOfBlock(currentSectorNumber, currentBlockNumber);
-	EraseBlockCompletely();
-	InitializeTailOnBlock();
-	__int16 num = GetNextBlockLocationFromTail();
-	std::cout << "GetNextBlockLocationFromTail __int16 " << num << "\n"; 
+	
 }
 
 void Block::EraseBlockCompletely()
 {
 	for (unsigned int i = startWordLocation; i <= endWordLocation; i++) {
 		Drivers::Word word;
-		word.letter1 = 1;//TODO:Change 1 to 255
-		word.letter2 = 1;
+		word.letter1 = 255;
+		word.letter2 = 255;
 		drivers.WriteWord(i, word);
 	}
 }
 
-void Block::InitializeTailOnBlock()
+void Block::InitializeBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, unsigned int previousBlockNumber)
+{
+	this->currentSectorNumber = currentSectorNumber;
+	this->currentBlockNumber = currentBlockNumber;
+	this->startWordLocation = GetStartLocationOfBlock(currentSectorNumber, currentBlockNumber);
+	this->endWordLocation = GetEndLocationOfBlock(currentSectorNumber, currentBlockNumber);
+	EraseBlockCompletely();
+	InitializeTailOnBlock(previousBlockNumber);
+	__int16 num = GetNextBlockLocationFromTail();
+	//std::cout << "GetNextBlockLocationFromTail __int16 " << num << "\n"; 
+}
+
+void Block::InitializeTailOnBlock(unsigned int previousBlockNumber)
 { // The tail on the block has 9 bits that point to block 0 to block 511 in the sector.
 	Drivers::Word word;
-	__int16 number = 16706;
+	__int16 number = previousBlockNumber;
 	word = convert_int16_to_word(number);
 
 	//word.letter1 = 65;//Do something meaningful.

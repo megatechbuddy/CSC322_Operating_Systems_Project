@@ -5,15 +5,15 @@
 Drivers::Drivers()
 {
 	Initialize();
-	Word word;
-	word.letter1 = 66;
-	word.letter2 = 67;
-	WriteWord(0, word);
-	WriteWord(3, word);
+	//Word word;
+	//word.letter1 = 66;
+	//word.letter2 = 67;
+	//WriteWord(0, word);
+	//WriteWord(3, word);
 	//EraseSector(0);
 	//EraseAllSectors();
-	ReadWord(0);
-	ReadWord(3);
+	//ReadWord(0);
+	//ReadWord(3);
 }
 
 void Drivers::CreateMemory() {
@@ -24,7 +24,7 @@ void Drivers::CreateMemory() {
 		outFile.write(reinterpret_cast<char*>(&emptyByte), 1);
 	}
 	outFile.close();
-	std::cout << "Memory Created\n";	
+	//std::cout << "Memory Created\n";	
 }
 
 void Drivers::EraseAllSectors() {
@@ -32,7 +32,7 @@ void Drivers::EraseAllSectors() {
 	{
 		EraseSector(i);
 	}
-	std::cout << "Erased all sectors..\n";
+	//std::cout << "Erased all sectors..\n";
 }
 
 void Drivers::EraseSector(unsigned int nSectorNr) {
@@ -70,7 +70,7 @@ Drivers::Word Drivers::ReadWord(unsigned int wordAddress) {
 		word.letter2 = (unsigned char)holderVariable;
 
 		inFile.close();
-		std::cout << "Word Binary at " << wordAddress << ": " << word.letter1 << word.letter2 << "\n";
+		//std::cout << "Word Binary at " << wordAddress << ": " << word.letter1 << word.letter2 << "\n";
 		return word;
 	}
 	else {
@@ -84,7 +84,7 @@ Drivers::Word Drivers::ReadWord(unsigned int wordAddress) {
 
 void Drivers::WriteWord(unsigned int wordAddress, Word nWord) {
 	if (wordAddress >= 0 && wordAddress < TotalWordsOfMemory) {
-		std::cout << "Writting Word: " << nWord.letter1 << nWord.letter2 << " sectors.  At address: "<< wordAddress<<"\n";
+		//std::cout << "Writting Word: " << nWord.letter1 << nWord.letter2 << " sectors.  At address: "<< wordAddress<<"\n";
 		std::fstream outFile(fileName); //TODO:used too many times
 		unsigned int beginning = WordSize * wordAddress;
 		outFile.seekp(beginning, std::ios::beg);
@@ -99,8 +99,8 @@ void Drivers::WriteWord(unsigned int wordAddress, Word nWord) {
 void Drivers::Initialize() {
 	std::ifstream ifile(fileName);
 	if (ifile) {
-		std::cout << "File found at " + fileName << "\n";
-		std::cout << "Opening that file now. \n";
+		//std::cout << "File found at " + fileName << "\n";
+		//std::cout << "Opening that file now. \n";
 	}
 	else {
 		CreateMemory();

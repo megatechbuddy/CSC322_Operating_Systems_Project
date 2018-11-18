@@ -1,54 +1,83 @@
 //Sean Benson
 #include "stdafx.h"
 #include "MemoryStructureManager.h"
+#include "Drivers.h"
 
-MemoryStructureManager::MemoryStructureManager()
+MemoryStructureManager::MemoryStructureManager(bool emptySector)
 {
 	//if no memory structure here
-	//CreateMemoryStructure();
+	if (emptySector) {
+		CreateMemoryStructure();
+	}
+	
 
 	//Test Block
-	Block block(0, 0);
-	block.InitializeTailOnBlock();
-	block.~Block();
-
+	//Block block2(0, 1);
+	//block2.InitializeTailOnBlock();
+	//block2.~Block();
 }
 
 void MemoryStructureManager::CreateMemoryStructure()
 {
+	InitializeAllBlocks(); 
 	InitializeTableBlocks();
-	InitializeFileBlocks();
 	CreateFileAllocationTables();
 }
 
-void MemoryStructureManager::InitializeTableBlocks()
+void MemoryStructureManager::InitializeAllBlocks()
 {
-	InitializeTableBlock(0,0);
+	InitializeUnusedBlocks();
 }
 
-void MemoryStructureManager::InitializeFileBlocks()
+void MemoryStructureManager::InitializeUnusedBlocks()
 {
-
+	//this traverses 100% of the memory
+	for (unsigned int sectorNumber = 0; sectorNumber < Drivers::TotalSectorsOfMemory; sectorNumber++) {
+		
+		for (unsigned int blockNumber = 0; blockNumber < MemoryStructureManager::AmountOfBlocks; blockNumber++) {
+			if (blockNumber != 0) {
+				InitializeUnusedBlock(sectorNumber, blockNumber, blockNumber - 1);
+				std::cout << "Sector: " << sectorNumber << "Block: " << blockNumber << "\n";
+			}
+			else {
+				InitializeUnusedBlock(sectorNumber, blockNumber, 0); 
+				std::cout << "Sector: " << sectorNumber << "Block: " << blockNumber << "\n";
+			}
+		}
+	}
 }
 
-//TODO: put as child of Block
-void MemoryStructureManager::InitializeTableBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber)
+//This function makes the an empty table block
+void MemoryStructureManager::InitializeUnusedBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, unsigned int previousBlockNumber)
 {
 	//put the table structure in place
-	Block block(currentSectorNumber, currentBlockNumber);
-	block.InitializeTailOnBlock();
-	block.~Block();
+	block.InitializeBlock(currentSectorNumber, currentBlockNumber, previousBlockNumber);
+	block.InitializeTailOnBlock(previousBlockNumber);
+	
 }
 
-//TODO: put as child of Block
+//Puts files in the unused, empty tables
+void MemoryStructureManager::InitializeTableBlocks()
+{
+	//for (unsigned int sectorNumber = 0; sectorNumber < Drivers::TotalSectorsOfMemory; sectorNumber++) {
+	//		InitializeTableBlock(sectorNumber, 0);
+	//}
+}
+
+void MemoryStructureManager::InitializeTableBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber)
+{
+	//TODO: fill in
+	//use InitializeFileBlock
+
+	//point to other table blocks
+}
+
 void MemoryStructureManager::InitializeFileBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber)
 {
-	//put memory of the original block in the real memory
-	Block block(currentSectorNumber, currentBlockNumber);
-	block.InitializeTailOnBlock();
-	block.~Block();
+	//put file inside the unused blocks
 }
 
+//This function puts files into the empty file allocation table.
 void MemoryStructureManager::CreateFileAllocationTables()
 {
 
@@ -56,4 +85,5 @@ void MemoryStructureManager::CreateFileAllocationTables()
 
 MemoryStructureManager::~MemoryStructureManager()
 {
+	block.~Block();
 }

@@ -13,9 +13,10 @@ public:
 	unsigned int startWordLocation;
 	unsigned int endWordLocation;
 	Drivers drivers;
-	Block(unsigned int currentSectorNumber, unsigned int currentBlockNumber);
+	Block();
 	void EraseBlockCompletely();
-	void InitializeTailOnBlock();
+	void InitializeBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, unsigned int previousBlockNumber);
+	void InitializeTailOnBlock(unsigned int previousBlockNumber);
 	__int16 GetNextBlockLocationFromTail();
 	unsigned int GetStartLocationOfBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber);
 	unsigned int GetEndLocationOfBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber);
