@@ -8,6 +8,8 @@
 
 #pragma once
 
+using namespace std;
+
 #ifndef DRIVERS_H
 #define DRIVERS_H
 class Drivers
@@ -35,7 +37,9 @@ public:
 	void WriteWord(unsigned int wordAddress, Word nWord);
 	void Initialize();
 
-	
+	std::fstream outFile;
+
+
 
 	~Drivers();
 };

@@ -4,6 +4,7 @@
 
 Drivers::Drivers()
 {
+	outFile.open(fileName);
 	Initialize();
 	//Word word;
 	//word.letter1 = 66;
@@ -17,7 +18,7 @@ Drivers::Drivers()
 }
 
 void Drivers::CreateMemory() {
-	std::ofstream outFile;
+	//std::ofstream outFile;
 	outFile.open(fileName, std::ios_base::app);
 	for (unsigned int i = 0; i < TotalBytesOfMemory; i++)
 	{
@@ -37,7 +38,7 @@ void Drivers::EraseAllSectors() {
 
 void Drivers::EraseSector(unsigned int nSectorNr) {
 	if (nSectorNr >= 0 && nSectorNr < TotalSectorsOfMemory) { 
-		std::fstream outFile(fileName); //TODO:used too many times
+		//std::fstream outFile(fileName); //TODO:used too many times
 		unsigned int beginning = SectorSize * nSectorNr;
 		unsigned int end = SectorSize * nSectorNr + SectorSize;
 		outFile.seekp(beginning, std::ios::beg);
@@ -85,11 +86,13 @@ Drivers::Word Drivers::ReadWord(unsigned int wordAddress) {
 void Drivers::WriteWord(unsigned int wordAddress, Word nWord) {
 	if (wordAddress >= 0 && wordAddress < TotalWordsOfMemory) {
 		//std::cout << "Writting Word: " << nWord.letter1 << nWord.letter2 << " sectors.  At address: "<< wordAddress<<"\n";
-		std::fstream outFile(fileName); //TODO:used too many times
+		//std::fstream outFile3(fileName); //TODO:used too many times
+
 		unsigned int beginning = WordSize * wordAddress;
 		outFile.seekp(beginning, std::ios::beg);
 		outFile.write(reinterpret_cast<char*>(&nWord.letter1), 1);
 		outFile.write(reinterpret_cast<char*>(&nWord.letter2), 1);
+
 		outFile.close();
 	} else {
 		std::cout << "Please use a valid wordAddress instead of " << wordAddress << "\n";
@@ -110,4 +113,5 @@ void Drivers::Initialize() {
 
 Drivers::~Drivers()
 {
+	outFile.close();
 }
