@@ -1,4 +1,4 @@
-
+//Sean Benson
 #include "stdafx.h"
 #include "Drivers.h"
 
@@ -52,7 +52,9 @@ void Drivers::EraseSector(unsigned int nSectorNr) {
 	}	
 }
 
-void Drivers::ReadWord(unsigned int wordAddress) {
+
+
+Drivers::Word Drivers::ReadWord(unsigned int wordAddress) {
 	if (wordAddress >= 0 && wordAddress < TotalWordsOfMemory) {
 		std::ifstream inFile; //TODO:used too many times
 		inFile.open(fileName, std::ios::binary);
@@ -69,9 +71,14 @@ void Drivers::ReadWord(unsigned int wordAddress) {
 
 		inFile.close();
 		std::cout << "Word Binary at " << wordAddress << ": " << word.letter1 << word.letter2 << "\n";
+		return word;
 	}
 	else {
+		Word word;
+		word.letter1 = 255;
+		word.letter2 = 255;
 		std::cout << "Please use a valid wordAddress instead of " << wordAddress << "\n";
+		return word;
 	}
 }
 
