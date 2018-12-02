@@ -83,19 +83,17 @@ void MemoryStructureManager::InitializeUnusedBlocks()
 	//this traverses 100% of the memory
 	//it traverses each sections blocks one by one till the end of the sector then
 	//it moves to the next sector, all while putting tails on the blocks.
-	//for (unsigned int sectorNumber = 0; sectorNumber < Drivers::TotalSectorsOfMemory; sectorNumber++) {
-	unsigned int sectorNumber = 0;
-		for (unsigned int blockNumber = 0; blockNumber < 10; blockNumber++) {//MemoryStructureManager::AmountOfBlocks; blockNumber++) {
+	for (unsigned int sectorNumber = 0; sectorNumber < Drivers::TotalSectorsOfMemory; sectorNumber++) {
+		for (unsigned int blockNumber = 0; blockNumber < MemoryStructureManager::AmountOfBlocks; blockNumber++) {
 			if (blockNumber != 0) {
 				block.InitializeBlock(sectorNumber, blockNumber, blockNumber + 1);
-				std::cout << "Sector: " << sectorNumber << "Block: " << blockNumber << " Next Block: " << blockNumber+1<< "\n";
 			}
 			else {
 				block.InitializeBlock(sectorNumber, blockNumber, 0);
-				std::cout << "Sector: " << sectorNumber << "Block: " << blockNumber << "\n";
 			}
 		}
-	//}
+		std::cout << "Sector: " << sectorNumber << "\n";
+	}
 }
 
 //Puts files in the unused, empty tables
@@ -130,5 +128,5 @@ void MemoryStructureManager::CreateFileAllocationTables()
 
 MemoryStructureManager::~MemoryStructureManager()
 {
-	block.~Block();
+	//block.~Block();
 }

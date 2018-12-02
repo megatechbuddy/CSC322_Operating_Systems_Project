@@ -24,13 +24,24 @@ Block::Block()
 //}
 
 void Block::EraseBlockCompletely()
-{
+{	
+	Drivers::Word word;
+	word.letter1 = 255;
+	word.letter2 = 255;
+	StartIO();
 	for (unsigned int i = startWordLocation; i <= endWordLocation; i++) {
-		Drivers::Word word;
-		word.letter1 = 255;
-		word.letter2 = 255;
+		
 		drivers.WriteWord(i, word);
 	}
+	StopIO();
+}
+
+void Block::StartIO() {
+	drivers.StartIO();
+}
+
+void Block::StopIO() {
+	drivers.StopIO();
 }
 
 void Block::InitializeBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, unsigned int nextBlockNumber)
@@ -48,7 +59,9 @@ void Block::InitializeTailOnBlock(unsigned int nextBlockNumber)
 	Drivers::Word word;
 	__int16 number = nextBlockNumber;
 	word = convert_int16_to_word(number);
+	StartIO();
 	drivers.WriteWord(endWordLocation,word);
+	StopIO();
 }
 
 __int16 Block::GetNextBlockLocationFromTail()
@@ -97,5 +110,5 @@ __int16 Block::convert_word_to_int16(Drivers::Word word)
 
 Block::~Block()
 {//TODO: make sure everything is deconstructed to prevent memory leaks
-	drivers.~Drivers();
+	//drivers.~Drivers();
 }

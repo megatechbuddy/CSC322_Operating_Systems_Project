@@ -18,6 +18,8 @@ public:
 	//void SetFileFragment(vector<Drivers::Word> inputFragment);
 	//vector<Drivers::Word> GetFileFragment();
 	void EraseBlockCompletely();
+	void StartIO();
+	void StopIO();
 	void InitializeBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, unsigned int previousBlockNumber);
 	void InitializeTailOnBlock(unsigned int previousBlockNumber);
 	__int16 GetNextBlockLocationFromTail();
