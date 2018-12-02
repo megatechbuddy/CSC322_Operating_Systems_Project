@@ -145,7 +145,6 @@
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="Drivers.h" />
-    <ClInclude Include="FileManager.h" />
     <ClInclude Include="MemoryStructureManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -153,7 +152,6 @@
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Drivers.cpp" />
-    <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="MemoryStructureManager.cpp" />
     <ClCompile Include="OperatingSystemsProject.cpp" />
     <ClCompile Include="stdafx.cpp">

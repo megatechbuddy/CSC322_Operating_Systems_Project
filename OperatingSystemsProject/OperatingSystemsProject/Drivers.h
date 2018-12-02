@@ -30,17 +30,11 @@ public:
 	};
 	//Word DefineWord(unsigned char letter1, unsigned char letter2);
 	Drivers();
-	void CreateMemory();
 	void EraseAllSectors();
 	void EraseSector(unsigned int nSectorNr);
 	Word ReadWord(unsigned int nAddress);
 	void WriteWord(unsigned int wordAddress, Word nWord);
 	void Initialize();
-
-	std::fstream outFile;
-
-
-
 	~Drivers();
 };
 

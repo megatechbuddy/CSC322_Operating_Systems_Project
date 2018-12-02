@@ -1,5 +1,6 @@
 //Sean Benson
 #include "Drivers.h"
+#include <vector>
 #pragma once
 #ifndef BLOCK_H
 #define BLOCK_H
@@ -14,6 +15,8 @@ public:
 	unsigned int endWordLocation;
 	Drivers drivers;
 	Block();
+	//void SetFileFragment(vector<Drivers::Word> inputFragment);
+	//vector<Drivers::Word> GetFileFragment();
 	void EraseBlockCompletely();
 	void InitializeBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, unsigned int previousBlockNumber);
 	void InitializeTailOnBlock(unsigned int previousBlockNumber);

@@ -7,6 +7,22 @@ Block::Block()
 	
 }
 
+//void Block::SetFileFragment(vector<Drivers::Word> inputFragment)
+//{//TODO: make sure check if input vector is the right size
+//	for (unsigned int i = startWordLocation; i <= endWordLocation - 1; i++) {
+//		drivers.WriteWord(i, inputFragment.at(i));
+//	}
+//}
+
+//vector<Drivers::Word> Block::GetFileFragment()
+//{
+//	vector<Drivers::Word> outputFragment;
+//	for (unsigned int i = startWordLocation; i <= endWordLocation - 1; i++) {
+//		outputFragment.push_back(drivers.ReadWord(i));
+//	}
+//	return outputFragment;
+//}
+
 void Block::EraseBlockCompletely()
 {
 	for (unsigned int i = startWordLocation; i <= endWordLocation; i++) {
@@ -17,26 +33,21 @@ void Block::EraseBlockCompletely()
 	}
 }
 
-void Block::InitializeBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, unsigned int previousBlockNumber)
+void Block::InitializeBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, unsigned int nextBlockNumber)
 {
 	this->currentSectorNumber = currentSectorNumber;
 	this->currentBlockNumber = currentBlockNumber;
 	this->startWordLocation = GetStartLocationOfBlock(currentSectorNumber, currentBlockNumber);
 	this->endWordLocation = GetEndLocationOfBlock(currentSectorNumber, currentBlockNumber);
 	EraseBlockCompletely();
-	InitializeTailOnBlock(previousBlockNumber);
-	__int16 num = GetNextBlockLocationFromTail();
-	//std::cout << "GetNextBlockLocationFromTail __int16 " << num << "\n"; 
+	InitializeTailOnBlock(nextBlockNumber);
 }
 
-void Block::InitializeTailOnBlock(unsigned int previousBlockNumber)
+void Block::InitializeTailOnBlock(unsigned int nextBlockNumber)
 { // The tail on the block has 9 bits that point to block 0 to block 511 in the sector.
 	Drivers::Word word;
-	__int16 number = previousBlockNumber;
+	__int16 number = nextBlockNumber;
 	word = convert_int16_to_word(number);
-
-	//word.letter1 = 65;//Do something meaningful.
-	//word.letter2 = 65;
 	drivers.WriteWord(endWordLocation,word);
 }
 
