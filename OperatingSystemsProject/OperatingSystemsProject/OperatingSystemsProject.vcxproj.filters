@@ -30,6 +30,12 @@
     <ClInclude Include="Block.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OperatingSystemsProject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FAT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -45,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Block.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FAT.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

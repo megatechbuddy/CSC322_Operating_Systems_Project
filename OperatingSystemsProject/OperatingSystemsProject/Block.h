@@ -22,6 +22,7 @@ public:
 	void StopIO();
 	void InitializeBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, unsigned int previousBlockNumber);
 	void InitializeTailOnBlock(unsigned int previousBlockNumber);
+	std::vector<Drivers::Word> GetAllDataWordsFromBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber);
 	__int16 GetNextBlockLocationFromTail();
 	unsigned int GetStartLocationOfBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber);
 	unsigned int GetEndLocationOfBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber);

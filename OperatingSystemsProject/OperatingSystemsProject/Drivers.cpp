@@ -74,22 +74,16 @@ Drivers::Word Drivers::ReadWord(unsigned int wordAddress) {
 }
 
 void Drivers::Initialize() {
-	//std::ifstream ifile;
-	//ifile.open(fileName);
-	//if (ifile) {
-	//std::cout << "File found at " + fileName << "\n";
-	//std::cout << "Opening that file now. \n";
-	//	ifile.close();
-	//}
-	//else {
-	//	ifile.close();
-	//outFile.open(fileName);
-	//outFile.open(fileName, std::ios_base::app);
-	//CreateMemory();
-
-	EraseAllSectors();
-
-	//}
+	file.open(fileName);
+	if (file) {
+		file.close();
+		std::cout << "File found at " + fileName << "\n";
+		std::cout << "Opening that file now. \n";
+	}
+	else {
+		file.close();
+		EraseAllSectors();
+	}
 }
 
 Drivers::~Drivers()

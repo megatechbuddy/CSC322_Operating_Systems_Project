@@ -145,13 +145,16 @@
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="Drivers.h" />
+    <ClInclude Include="FAT.h" />
     <ClInclude Include="MemoryStructureManager.h" />
+    <ClInclude Include="OperatingSystemsProject.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Drivers.cpp" />
+    <ClCompile Include="FAT.cpp" />
     <ClCompile Include="MemoryStructureManager.cpp" />
     <ClCompile Include="OperatingSystemsProject.cpp" />
     <ClCompile Include="stdafx.cpp">

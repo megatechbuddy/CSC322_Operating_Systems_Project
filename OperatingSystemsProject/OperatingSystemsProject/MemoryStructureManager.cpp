@@ -1,15 +1,25 @@
 //Sean Benson
 #include "stdafx.h"
 #include "MemoryStructureManager.h"
-#include "Drivers.h"
 
-MemoryStructureManager::MemoryStructureManager(bool emptySector)
+MemoryStructureManager::MemoryStructureManager()
 {
 	//if no memory structure here
-	if (emptySector) {
+	if (false) {
 		CreateMemoryStructure();
 	}
-	
+
+	//load the files into the FAT
+	FAT::CSC322FILE file;
+	file.name = "blabla";
+	file.Sector = 0;
+	file.StartBlock = 1;
+	file.EndBlock = 3;
+	file.TotalBlocks = 3;
+	file.Deleted = false;
+	file.Used = false;
+	file.FAT = false;
+	fat.AddFile(file);
 
 	//Test Block
 	//Block block2(0, 1);
@@ -21,38 +31,62 @@ MemoryStructureManager::MemoryStructureManager(bool emptySector)
 //------------------------------------------------------------------------------------
 
 //opens the specified file
-MemoryStructureManager::CSC322FILE* MemoryStructureManager::CSC322_fopen(const char * filename, const char * mode)
+std::vector<Drivers::Word> MemoryStructureManager::CSC322_fopen(FAT::CSC322FILE fileInformation)
 {
-	return nullptr;
+	//get the files contents into a variable
+	std::vector<Drivers::Word> words;
+	unsigned int currentBlock = fileInformation.StartBlock;
+	for (unsigned int i = 0; i < fileInformation.TotalBlocks; i++) {
+		//concatenate data
+		std::vector<Drivers::Word> temp = block.GetAllDataWordsFromBlock(fileInformation.Sector,currentBlock);
+		words.reserve(temp.size() + words.size());
+		words.insert(words.end(), temp.begin(), temp.end());
+
+		//get next block location
+		currentBlock = block.GetNextBlockLocationFromTail();
+	}
+	return words;
 }
 
 //closes the file and cleanup
-int MemoryStructureManager::CSC322_fclose(CSC322FILE * stream)
+int MemoryStructureManager::CSC322_fclose(FAT::CSC322FILE * stream)
 {
 	return 0;
 }
 
 //reads the specified amount of information into memory
-int MemoryStructureManager::CSC322_fread(void * buffer, size_t nBytes, CSC322FILE * stream)
+void MemoryStructureManager::CSC322_fread(std::vector<Drivers::Word> words, size_t nWords)
 {
-	return 0;
+	//todo: nwords
+	//display files contents onto the screen
+	for (unsigned int i = 0; i < words.size(); i++) {
+		std::cout << words[0].letter1 << words[0].letter2;
+	}
+	std::cout << "\n";
+	
 }
 
-
 //Writes count of objects from the given array buffer to the output stream stream.
-int MemoryStructureManager::CSC322_fwrite(void *buffer, size_t nBytes, CSC322FILE*stream)
+int MemoryStructureManager::CSC322_fwrite(void *buffer, size_t nBytes)
 {
 	return 0;
 }
 
 //moves the pointer to the files beginning
-int MemoryStructureManager::CSC322_fseek(CSC322FILE * stream, long offset, int origin)
+int MemoryStructureManager::CSC322_fseek(long offset, int origin)
 {
-	return 0;
+	//TODO: Check if file is apart of FAT.
+	//Check to see if the size or offset is messed up.
+	bool success = false;
+	if (success) {
+		return 0;
+	}else{
+		return 1;
+	}
 }
 
 //Returns the current value of the position indicator of the stream
-long MemoryStructureManager::CSC322_ftell(CSC322FILE * stream)
+long MemoryStructureManager::CSC322_ftell()
 {
 	return 0;
 }
@@ -64,6 +98,12 @@ int MemoryStructureManager::CSC322_remove(const char * path)
 }
 
 //------------------------------------------------------------------------------------
+
+FAT MemoryStructureManager::getFAT() {
+
+	return fat;
+}
+
 //------------------------------------------------------------------------------------
 
 void MemoryStructureManager::CreateMemoryStructure()
