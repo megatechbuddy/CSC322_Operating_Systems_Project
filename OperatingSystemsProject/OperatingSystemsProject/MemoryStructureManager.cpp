@@ -9,6 +9,7 @@ MemoryStructureManager::MemoryStructureManager()
 		CreateMemoryStructure();
 	}	
 	InitializeTableBlock(0, 0, fat.files);
+	fat.LoadFATFromMemory();
 }
 
 //------------------------------------------------------------------------------------
@@ -129,9 +130,9 @@ int MemoryStructureManager::InitializeTableBlock(unsigned int currentSectorNumbe
 	//separate vector up into multiple vectors
 	std::vector<Drivers::Word> tempWords;
 	for (unsigned int i = 0; i < words.size(); i++) {
-		tempWords.push_back(words[temp]);
+		tempWords.push_back(words[temp+currentBlock*(block.SizeOfBlock-1)]);
 
-		if (temp == block.SizeOfBlock - 1) {
+		if (temp == block.SizeOfBlock - 2) {
 			block.PutAllDataWordsInBlock(currentSectorNumber, currentBlock, tempWords);
 			tempWords.clear();
 			temp = 0;

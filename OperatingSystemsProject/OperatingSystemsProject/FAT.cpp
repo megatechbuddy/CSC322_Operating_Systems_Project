@@ -9,19 +9,19 @@ FAT::FAT()
 	FAT::CSC322FILE file;
 	file.name = "file1";
 	file.Sector = 0;
-	file.StartBlock = 1;
-	file.EndBlock = 3;
+	file.StartBlock = 6;
+	file.EndBlock = 8;
 	file.TotalBlocks = 3;
 	file.Deleted = false;
-	file.Used = false;
+	file.Used = true;
 	file.FAT = false;
 	AddFile(file);
 
 	FAT::CSC322FILE file2;
 	file.name = "file2";
 	file.Sector = 0;
-	file.StartBlock = 4;
-	file.EndBlock = 6;
+	file.StartBlock = 9;
+	file.EndBlock = 11;
 	file.TotalBlocks = 3;
 	file.Deleted = false;
 	file.Used = true;
@@ -31,8 +31,8 @@ FAT::FAT()
 	FAT::CSC322FILE file3;
 	file.name = "file3";
 	file.Sector = 0;
-	file.StartBlock = 7;
-	file.EndBlock = 9;
+	file.StartBlock = 12;
+	file.EndBlock = 14;
 	file.TotalBlocks = 3;
 	file.Deleted = false;
 	file.Used = true;
@@ -42,7 +42,7 @@ FAT::FAT()
 	FAT::CSC322FILE fileUsed;
 	file.name = "UsedBlocks";
 	file.Sector = 0;
-	file.StartBlock = 10;
+	file.StartBlock = 15;
 	file.EndBlock = 511;
 	file.TotalBlocks = 502;
 	file.Deleted = false;
@@ -63,6 +63,7 @@ FAT::FAT()
 
 	files = ConvertFilesToVectorWords();
 
+	//LoadFATFromMemory();
 }
 
 
@@ -82,14 +83,15 @@ std::vector<Drivers::Word> FAT::ConvertFilesToVectorWords()
 		std::vector<char> data(file.name.begin(), file.name.end());
 
 		while (data.size() < 64) {
-			data.push_back(127);
+			data.push_back(255);
 		}
 		Drivers::Word temp1;
-		for (unsigned int i = 0; i < file.name.size(); i++) {
+		for (unsigned int i = 0; i < data.size()-1; i++) {
 			
-			temp1.letter1 = data[i] - 138;
-			temp1.letter2 = data[i + 1] - 138;
+			temp1.letter1 = data[i];
+			temp1.letter2 = data[i + 1];
 			words.push_back(temp1);
+			i++;
 		}
 
 		// enter line
@@ -135,7 +137,75 @@ std::vector<Drivers::Word> FAT::ConvertFilesToVectorWords()
 
 void FAT::LoadFATFromMemory()
 {
+	//get all memory
+	std::vector<Drivers::Word> words = block.GetAllDataWordsFromBlock(0, 0);
+	std::vector<Drivers::Word> words2 = block.GetAllDataWordsFromBlock(0, 1);
+	words.insert(words.end(), words2.begin(), words2.end());
+	words2 = block.GetAllDataWordsFromBlock(0, 2);
+	words.insert(words.end(), words2.begin(), words2.end());
+	words2 = block.GetAllDataWordsFromBlock(0, 3);
+	words.insert(words.end(), words2.begin(), words2.end());
+	words2 = block.GetAllDataWordsFromBlock(0, 4);
+	words.insert(words.end(), words2.begin(), words2.end());
+	words2 = block.GetAllDataWordsFromBlock(0, 5);
+	words.insert(words.end(), words2.begin(), words2.end());
+	words2 = block.GetAllDataWordsFromBlock(0, 6);
+	words.insert(words.end(), words2.begin(), words2.end());
 
+	unsigned int pointer = 0;
+	for (int i = 0; i < 5; i++) {
+		//read in the table
+		//use the table
+		//load name into vector
+		std::vector<Drivers::Word> data;
+		std::vector<char> data2;
+		for (int i = 0; i < 63; i++) {
+			data.push_back(words[i + pointer]);
+			data2.push_back(words[i + pointer].letter1);
+			data2.push_back(words[i + pointer].letter2);
+			pointer++;
+		}
+
+		pointer++;
+		//load Sector into vector
+		Drivers::Word tempWordSector = words[pointer];
+		pointer++;
+
+		//load StartBlock into vector
+		Drivers::Word tempWordStartBlock = words[pointer];
+		pointer++;
+
+		//load EndBlock into vector
+		Drivers::Word tempWordEndBlock = words[pointer];
+		pointer++;
+
+		//load TotalBlocks into vector
+		Drivers::Word tempWordTotalBlocks = words[pointer];
+		pointer++;
+
+		//load Deleted into vector
+		//load Used into vector
+		Drivers::Word tempWordDeletedUsed = words[pointer];
+		pointer++;
+
+		//load Fat into vector
+		Drivers::Word tempWordLast = words[pointer];
+		pointer++;
+
+		CSC322FILE tempFile;
+		std::string str(data2.begin(), data2.end());
+		tempFile.name = str;
+		tempFile.Sector = convert_word_to_int16(tempWordSector);
+		tempFile.StartBlock = convert_word_to_int16(tempWordStartBlock);
+		tempFile.EndBlock = convert_word_to_int16(tempWordEndBlock);
+		tempFile.TotalBlocks = convert_word_to_int16(tempWordTotalBlocks);
+		tempFile.Deleted = tempWordDeletedUsed.letter1;
+		tempFile.Used = tempWordDeletedUsed.letter2;
+		tempFile.FAT = tempWordLast.letter1;
+		AddFile(tempFile);
+
+	}
+	
 }
 
 FAT::CSC322FILE FAT::getCSC322FILE(unsigned int filenumber)
@@ -152,6 +222,17 @@ Drivers::Word FAT::convert_int16_to_word(__int16 __int16_number)
 	word.letter1 = ((__int16_number >> (1 << 3)) & 0xff);
 	word.letter2 = ((__int16_number >> (0 << 3)) & 0xff);
 	return word;
+}
+
+//convert word to number
+//source: https://stackoverflow.com/questions/15035208/how-does-one-access-a-single-byte-of-an-integer
+//code modified
+__int16 FAT::convert_word_to_int16(Drivers::Word word)
+{//TODO: Verify inputs
+	__int16 number;
+	unsigned char bytes[] = { word.letter2, word.letter1 };
+	number = *(int*)(bytes + 0);
+	return number;
 }
 
 FAT::~FAT()

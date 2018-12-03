@@ -55,23 +55,23 @@ void Drivers::WriteWord(unsigned int wordAddress, Word nWord) {
 
 Drivers::Word Drivers::ReadWord(unsigned int wordAddress) {
 	if (wordAddress >= 0 && wordAddress < TotalWordsOfMemory) {
-		file.open(fileName);
 		unsigned int beginning = WordSize * wordAddress;
 		file.seekg(beginning);
 		char holderVariable;
+		char holderVariable2;
 		file.read(&holderVariable, 1);
 		Word word;
-		word.letter1 = holderVariable - 138;
-		file.read(&holderVariable, 1);
-		word.letter2 = holderVariable - 138;
-		std::cout << "Word Binary at " << wordAddress << ": " << word.letter1 << word.letter2 << "\n";
+		//word.letter1 = holderVariable - 138;
+		word.letter1 = (unsigned char)holderVariable;
+		file.read(&holderVariable2, 1);
+		word.letter2 = (unsigned char)holderVariable2;
 		return word;
 	}
 	else {
 		Word word;
 		word.letter1 = 255;
 		word.letter2 = 255;
-//		std::cout << "Please use a valid wordAddress instead of " << wordAddress << "\n";
+		//		std::cout << "Please use a valid wordAddress instead of " << wordAddress << "\n";
 		return word;
 	}
 }

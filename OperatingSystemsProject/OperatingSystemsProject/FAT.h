@@ -30,7 +30,7 @@ public:
 	~FAT();
 	Block block;
 	Drivers::Word convert_int16_to_word(__int16 __int16_number);
-
+	__int16 convert_word_to_int16(Drivers::Word word);
 };
 #endif
 

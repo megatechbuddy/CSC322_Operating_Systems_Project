@@ -59,8 +59,8 @@ void Block::InitializeTailOnBlock(unsigned int nextBlockNumber)
 	Drivers::Word word;
 	__int16 number = nextBlockNumber;
 	word = convert_int16_to_word(number);
-	word.letter1 = word.letter1 + 186;
-	word.letter2 = word.letter2 + 186;
+	word.letter1 = word.letter1;
+	word.letter2 = word.letter2;
 	StartIO();
 	drivers.WriteWord(endWordLocation,word);
 	StopIO();
