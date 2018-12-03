@@ -84,11 +84,40 @@ void Block::PutAllDataWordsInBlock(unsigned int currentSectorNumber, unsigned in
 	unsigned int startWordLocation = GetStartLocationOfBlock(currentSectorNumber, currentBlockNumber);
 	unsigned int endWordLocation = GetEndLocationOfBlock(currentSectorNumber, currentBlockNumber);
 
+	//check if a 0 is turned into a one
+	bool fail = false;
 	StartIO();
 	for (unsigned int i = startWordLocation; i < endWordLocation; i++) {
-		drivers.WriteWord(i, words[i - startWordLocation]);
+		Drivers::Word tempword = drivers.ReadWord(i);
+
+		//AND it
+		std::bitset<16> lettera(tempword.letter1); //read in
+		std::bitset<16> letterb(tempword.letter2);
+
+
+		std::bitset<16> letteraa(words[i - startWordLocation].letter1); //want to change it to
+		std::bitset<16> letterab(words[i - startWordLocation].letter2);
+
+		for (int i = 0; i < 16; i++) {
+			if (lettera[i] == 0 && letteraa == 1) {
+				fail = true;
+			}
+		}
+
 	}
 	StopIO();
+
+	if (!fail) {
+		//write
+		StartIO();
+		for (unsigned int i = startWordLocation; i < endWordLocation; i++) {
+			drivers.WriteWord(i, words[i - startWordLocation]);
+		}
+		StopIO();
+	}
+	else {
+		cout << "Failed to write because the program prevents writing from zero to one.\n";
+	}
 }
 
 __int16 Block::GetNextBlockLocationFromTail(unsigned int currentSectorNumber, unsigned int currentBlockNumber)
