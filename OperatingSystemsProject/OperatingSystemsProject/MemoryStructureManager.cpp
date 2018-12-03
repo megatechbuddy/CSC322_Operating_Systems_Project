@@ -8,6 +8,7 @@ MemoryStructureManager::MemoryStructureManager()
 	if (false) {
 		CreateMemoryStructure();
 	}	
+	InitializeTableBlock(0, 0, fat.files);
 }
 
 //------------------------------------------------------------------------------------
@@ -120,9 +121,43 @@ void MemoryStructureManager::CSC322_remove(FAT::CSC322FILE fileInformation)
 
 //------------------------------------------------------------------------------------
 
-FAT MemoryStructureManager::getFAT() {
+//Writes count of objects from the given array buffer to the output stream stream.
+int MemoryStructureManager::InitializeTableBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, std::vector<Drivers::Word> words)
+{
+	unsigned int currentBlock = currentBlockNumber;
+	unsigned int temp = 0;
+	//separate vector up into multiple vectors
+	std::vector<Drivers::Word> tempWords;
+	for (unsigned int i = 0; i < words.size(); i++) {
+		tempWords.push_back(words[temp]);
 
-	return fat;
+		if (temp == block.SizeOfBlock - 1) {
+			block.PutAllDataWordsInBlock(currentSectorNumber, currentBlock, tempWords);
+			tempWords.clear();
+			temp = 0;
+			currentBlock++;
+		}
+		else if (temp < block.SizeOfBlock - 1 && i == words.size() - 1) {
+			while (temp != block.SizeOfBlock - 1) {
+				Drivers::Word tempWord;
+				tempWord.letter1 = 255;
+				tempWord.letter2 = 255;
+				tempWords.push_back(tempWord);
+				temp++;
+			}
+			block.PutAllDataWordsInBlock(currentSectorNumber, currentBlock, tempWords);
+			currentBlock++;
+		}
+		else {
+			temp++;
+		}
+	}
+	return 0;
+}
+
+FAT* MemoryStructureManager::getFAT() {
+
+	return &fat;
 }
 
 //------------------------------------------------------------------------------------
@@ -165,13 +200,6 @@ void MemoryStructureManager::InitializeTableBlocks()
 	//}
 }
 
-void MemoryStructureManager::InitializeTableBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber)
-{
-	//TODO: fill in
-	//use InitializeFileBlock
-
-	//point to other table blocks
-}
 
 void MemoryStructureManager::InitializeFileBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber)
 {

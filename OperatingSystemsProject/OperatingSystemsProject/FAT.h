@@ -1,5 +1,7 @@
 #include<string>
 #include<vector>
+#include "Block.h"
+#include "Drivers.h"
 #pragma once
 #ifndef FAT_H
 #define FAT_H
@@ -19,10 +21,15 @@ public:
 	std::vector<CSC322FILE> fileList;
 	unsigned int FileLimitPerSector = 10;
 	FAT();
+	std::vector<Drivers::Word> files;
+
 	void AddFile(CSC322FILE file);
-	void InitializeFAT(CSC322FILE file);
+	std::vector<Drivers::Word> ConvertFilesToVectorWords();
+	void LoadFATFromMemory();
 	CSC322FILE getCSC322FILE(unsigned int filenumber);
 	~FAT();
+	Block block;
+	Drivers::Word convert_int16_to_word(__int16 __int16_number);
 
 };
 #endif

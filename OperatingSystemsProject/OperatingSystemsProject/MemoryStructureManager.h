@@ -26,9 +26,11 @@ public:
 	void InitializeUnusedBlocks();
 	void InitializeTableBlocks();
 	void InitializeFileBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber);
-	void InitializeTableBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber);
+	//void InitializeTableBlock(std::vector<Drivers::Word> words, FAT::CSC322FILE fileInformation);
 	FAT fat;
-	FAT getFAT();
+	int InitializeTableBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, std::vector<Drivers::Word> words);
+	FAT* getFAT();
+	
 	~MemoryStructureManager();
 };
 

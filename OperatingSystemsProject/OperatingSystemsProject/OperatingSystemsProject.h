@@ -13,7 +13,7 @@ public:
 	void DisplayFiles();
 	void GiveOptions();
 	~OperatingSystemsProject();
-	FAT fat;
+	FAT* fat;
 	MemoryStructureManager memoryStructureManager;
 };
 #endif
