@@ -49,7 +49,7 @@ std::vector<Drivers::Word> MemoryStructureManager::CSC322_fopen(FAT::CSC322FILE 
 }
 
 //closes the file and cleanup
-int MemoryStructureManager::CSC322_fclose(FAT::CSC322FILE * stream)
+int MemoryStructureManager::CSC322_fclose()
 {
 	return 0;
 }
@@ -67,8 +67,36 @@ void MemoryStructureManager::CSC322_fread(std::vector<Drivers::Word> words, size
 }
 
 //Writes count of objects from the given array buffer to the output stream stream.
-int MemoryStructureManager::CSC322_fwrite(void *buffer, size_t nBytes)
+int MemoryStructureManager::CSC322_fwrite(std::vector<Drivers::Word> words, FAT::CSC322FILE fileInformation)
 {
+	unsigned int currentBlock = fileInformation.StartBlock;
+	unsigned int temp = 0;
+	//separate vector up into multiple vectors
+	std::vector<Drivers::Word> tempWords;
+	for (unsigned int i = 0; i < words.size(); i++) {
+		tempWords.push_back(words[temp]);
+		
+		if (temp == block.SizeOfBlock-2) {
+			block.PutAllDataWordsInBlock(fileInformation.Sector, currentBlock, tempWords);
+			tempWords.clear();
+			temp = 0;
+			currentBlock++;
+		}
+		else if (temp < block.SizeOfBlock - 2 && i == words.size()-1) {
+			while(temp != block.SizeOfBlock - 2) {
+				Drivers::Word tempWord;
+				tempWord.letter1 = 255;
+				tempWord.letter2 = 255;
+				tempWords.push_back(tempWord);
+				temp++;
+			}
+			block.PutAllDataWordsInBlock(fileInformation.Sector, currentBlock, tempWords);
+			currentBlock++;
+		}
+		else {
+			temp++;
+		}
+	}
 	return 0;
 }
 

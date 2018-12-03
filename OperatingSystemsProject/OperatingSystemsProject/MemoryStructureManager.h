@@ -14,9 +14,9 @@ public:
 	Block block; 
 	std::vector<Drivers::Word> CSC322_fopen(FAT::CSC322FILE fileInformation);
 	//opens the specified file
-	int CSC322_fclose(FAT::CSC322FILE *stream); //closes the file and cleanup
+	int CSC322_fclose(); //closes the file and cleanup
 	void CSC322_fread(std::vector<Drivers::Word> words, size_t nWords); //reads the specified amount of information into memory
-	int CSC322_fwrite(void *buffer, size_t nBytes); //Writes count of objects from the given array buffer to the output stream stream.
+	int CSC322_fwrite(std::vector<Drivers::Word> words, FAT::CSC322FILE fileInformation); //Writes count of objects from the given array buffer to the output stream stream.
 	int CSC322_fseek(long offset, int origin); //moves the pointer to the files beginning
 	long CSC322_ftell(); //Returns the current value of the position indicator of the stream
 	int CSC322_remove(const char *path); //removes file

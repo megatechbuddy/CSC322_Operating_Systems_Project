@@ -75,6 +75,18 @@ std::vector<Drivers::Word> Block::GetAllDataWordsFromBlock(unsigned int currentS
 	return words;
 }
 
+void Block::PutAllDataWordsInBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, std::vector<Drivers::Word> words) {
+	//get the block's contents into a variable
+	unsigned int startWordLocation = GetStartLocationOfBlock(currentSectorNumber, currentBlockNumber);
+	unsigned int endWordLocation = GetEndLocationOfBlock(currentSectorNumber, currentBlockNumber);
+
+	StartIO();
+	for (unsigned int i = startWordLocation; i < endWordLocation; i++) {
+		drivers.WriteWord(i, words[i - startWordLocation]);
+	}
+	StopIO();
+}
+
 __int16 Block::GetNextBlockLocationFromTail()
 {
 	Drivers::Word word = drivers.ReadWord(endWordLocation);
