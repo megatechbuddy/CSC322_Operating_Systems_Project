@@ -4,6 +4,10 @@
 using namespace std;
 FAT::FAT()
 {
+}
+
+void FAT::initialize()
+{
 	//initialize files
 	//load the files into the FAT
 	FAT::CSC322FILE file;
@@ -62,10 +66,7 @@ FAT::FAT()
 	AddFile(file);
 
 	files = ConvertFilesToVectorWords();
-
-	//LoadFATFromMemory();
 }
-
 
 void FAT::AddFile(CSC322FILE file)
 {
@@ -86,7 +87,7 @@ std::vector<Drivers::Word> FAT::ConvertFilesToVectorWords()
 			data.push_back(255);
 		}
 		Drivers::Word temp1;
-		for (unsigned int i = 0; i < data.size()-1; i++) {
+		for (unsigned int i = 0; i < data.size(); i++) {
 			
 			temp1.letter1 = data[i];
 			temp1.letter2 = data[i + 1];
@@ -159,10 +160,10 @@ void FAT::LoadFATFromMemory()
 		//load name into vector
 		std::vector<Drivers::Word> data;
 		std::vector<char> data2;
-		for (int i = 0; i < 63; i++) {
-			data.push_back(words[i + pointer]);
-			data2.push_back(words[i + pointer].letter1);
-			data2.push_back(words[i + pointer].letter2);
+		for (int j = 0; j < 32; j++) {
+			data.push_back(words[pointer]);
+			data2.push_back(words[pointer].letter1);
+			data2.push_back(words[pointer].letter2);
 			pointer++;
 		}
 
@@ -203,7 +204,6 @@ void FAT::LoadFATFromMemory()
 		tempFile.Used = tempWordDeletedUsed.letter2;
 		tempFile.FAT = tempWordLast.letter1;
 		AddFile(tempFile);
-
 	}
 	
 }

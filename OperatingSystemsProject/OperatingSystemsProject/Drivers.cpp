@@ -5,8 +5,6 @@
 Drivers::Drivers()
 {
 	Initialize();
-
-	//EraseAllSectors();
 }
 
 void Drivers::StartIO() {
@@ -79,11 +77,13 @@ Drivers::Word Drivers::ReadWord(unsigned int wordAddress) {
 void Drivers::Initialize() {
 	file.open(fileName);
 	if (file) {
+		fileFound = true;
 		file.close();
 		std::cout << "File found at " + fileName << "\n";
 		std::cout << "Opening that file now. \n";
 	}
 	else {
+		fileFound = false;
 		file.close();
 		EraseAllSectors();
 	}

@@ -1,6 +1,7 @@
 //#include "stdafx.h"
 #include "iostream"     
 #include "MemoryStructureManager.h"
+#include <string>
 #pragma once
 #ifndef OPERATINGSYSTEMSPROJECT_H
 #define OPERATINGSYSTEMSPROJECT_H
@@ -15,5 +16,6 @@ public:
 	~OperatingSystemsProject();
 	FAT* fat;
 	MemoryStructureManager memoryStructureManager;
+	FAT::CSC322FILE ChooseAFile(unsigned int input);
 };
 #endif

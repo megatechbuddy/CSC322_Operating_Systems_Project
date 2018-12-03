@@ -5,10 +5,28 @@
 MemoryStructureManager::MemoryStructureManager()
 {
 	//if no memory structure here
-	if (false) {
+	if (!block.drivers.fileFound) {
 		CreateMemoryStructure();
+		fat.initialize();
+
+		//fill it
+		for (int i = 0; i < fat.fileList.size(); i++) {
+			FAT::CSC322FILE tempFile = fat.fileList[i];
+			std::vector<Drivers::Word> writeWords;
+			for (unsigned int i = 0; i < 100; i++) {
+				Drivers::Word tempWord;
+				tempWord.letter1 = 66;
+				tempWord.letter2 = 66;
+				writeWords.push_back(tempWord);
+			}
+			if (tempFile.Used) {
+				CSC322_fwrite(writeWords, tempFile);
+			}
+		}
+
+		InitializeTableBlock(0, 0, fat.files);
+		block.drivers.fileFound = true;
 	}	
-	InitializeTableBlock(0, 0, fat.files);
 	fat.LoadFATFromMemory();
 }
 

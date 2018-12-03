@@ -15,7 +15,8 @@ using namespace std;
 class Drivers
 {
 public:
-	const std::string fileName = "D:\\Documents\\School\\CSC 322 Operating Systems\\Class2\\file\\test4.bin";
+	//const std::string fileName = "D:\\Documents\\School\\CSC 322 Operating Systems\\Class2\\file\\test4.bin";
+	const std::string fileName = "test4.bin";
 	static const unsigned int SectorSize = 65536;
 	static const unsigned int TotalSectorsOfMemory = 20;
 	static const unsigned int TotalBytesOfMemory = 1310720;
@@ -38,7 +39,7 @@ public:
 	void WriteWord(unsigned int wordAddress, Word nWord);
 	void Initialize();
 	~Drivers();
-
+	bool fileFound = false;
 	std::fstream file;
 };
 

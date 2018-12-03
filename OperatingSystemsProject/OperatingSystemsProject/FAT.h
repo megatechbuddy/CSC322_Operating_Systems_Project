@@ -23,6 +23,8 @@ public:
 	FAT();
 	std::vector<Drivers::Word> files;
 
+	void initialize();
+
 	void AddFile(CSC322FILE file);
 	std::vector<Drivers::Word> ConvertFilesToVectorWords();
 	void LoadFATFromMemory();

@@ -1,4 +1,4 @@
-﻿  MemoryStructureManager.cpp
-  Drivers.cpp
-  Generating Code...
+﻿  OperatingSystemsProject.cpp
+d:\documents\school\csc 322 operating systems\class2\git\operatingsystemsproject\operatingsystemsproject\operatingsystemsproject\operatingsystemsproject\operatingsystemsproject.cpp(28): warning C4018: '<': signed/unsigned mismatch
+d:\documents\school\csc 322 operating systems\class2\git\operatingsystemsproject\operatingsystemsproject\operatingsystemsproject\operatingsystemsproject\operatingsystemsproject.cpp(80): warning C4018: '<': signed/unsigned mismatch
   OperatingSystemsProject.vcxproj -> D:\Documents\School\CSC 322 Operating Systems\Class2\git\OperatingSystemsProject\OperatingSystemsProject\OperatingSystemsProject\Debug\OperatingSystemsProject.exe
