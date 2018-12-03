@@ -59,6 +59,8 @@ void Block::InitializeTailOnBlock(unsigned int nextBlockNumber)
 	Drivers::Word word;
 	__int16 number = nextBlockNumber;
 	word = convert_int16_to_word(number);
+	word.letter1 = word.letter1 + 186;
+	word.letter2 = word.letter2 + 186;
 	StartIO();
 	drivers.WriteWord(endWordLocation,word);
 	StopIO();
@@ -69,9 +71,11 @@ std::vector<Drivers::Word> Block::GetAllDataWordsFromBlock(unsigned int currentS
 	unsigned int startWordLocation = GetStartLocationOfBlock(currentSectorNumber, currentBlockNumber);
 	unsigned int endWordLocation = GetEndLocationOfBlock(currentSectorNumber, currentBlockNumber);
 	std::vector<Drivers::Word> words;
+	StartIO();
 	for (unsigned int i = startWordLocation; i < endWordLocation; i++) {
 		words.push_back(drivers.ReadWord(i));
 	}
+	StopIO();
 	return words;
 }
 
@@ -87,8 +91,9 @@ void Block::PutAllDataWordsInBlock(unsigned int currentSectorNumber, unsigned in
 	StopIO();
 }
 
-__int16 Block::GetNextBlockLocationFromTail()
+__int16 Block::GetNextBlockLocationFromTail(unsigned int currentSectorNumber, unsigned int currentBlockNumber)
 {
+	unsigned int endWordLocation = GetEndLocationOfBlock(currentSectorNumber, currentBlockNumber);
 	Drivers::Word word = drivers.ReadWord(endWordLocation);
 	__int16 nextBlockLocationFromTail = convert_word_to_int16(word);
 	return nextBlockLocationFromTail;

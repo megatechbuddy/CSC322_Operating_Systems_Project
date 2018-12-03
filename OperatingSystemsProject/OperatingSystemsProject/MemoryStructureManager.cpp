@@ -7,24 +7,7 @@ MemoryStructureManager::MemoryStructureManager()
 	//if no memory structure here
 	if (false) {
 		CreateMemoryStructure();
-	}
-
-	//load the files into the FAT
-	FAT::CSC322FILE file;
-	file.name = "blabla";
-	file.Sector = 0;
-	file.StartBlock = 1;
-	file.EndBlock = 3;
-	file.TotalBlocks = 3;
-	file.Deleted = false;
-	file.Used = false;
-	file.FAT = false;
-	fat.AddFile(file);
-
-	//Test Block
-	//Block block2(0, 1);
-	//block2.InitializeTailOnBlock();
-	//block2.~Block();
+	}	
 }
 
 //------------------------------------------------------------------------------------
@@ -43,7 +26,7 @@ std::vector<Drivers::Word> MemoryStructureManager::CSC322_fopen(FAT::CSC322FILE 
 		words.insert(words.end(), temp.begin(), temp.end());
 
 		//get next block location
-		currentBlock = block.GetNextBlockLocationFromTail();
+		currentBlock = block.GetNextBlockLocationFromTail(fileInformation.Sector, currentBlock);
 	}
 	return words;
 }
@@ -60,7 +43,9 @@ void MemoryStructureManager::CSC322_fread(std::vector<Drivers::Word> words, size
 	//todo: nwords
 	//display files contents onto the screen
 	for (unsigned int i = 0; i < words.size(); i++) {
-		std::cout << words[0].letter1 << words[0].letter2;
+		unsigned char character = words[i].letter1;
+		unsigned char character2 = words[i].letter1;
+		std::cout << character<<character2;
 	}
 	std::cout << "\n";
 	
@@ -120,9 +105,17 @@ long MemoryStructureManager::CSC322_ftell()
 }
 
 //removes file
-int MemoryStructureManager::CSC322_remove(const char * path)
+void MemoryStructureManager::CSC322_remove(FAT::CSC322FILE fileInformation)
 {
-	return 0;
+	unsigned int length = fileInformation.TotalBlocks * (Block::SizeOfBlock - 1);
+	std::vector<Drivers::Word> writeWords;
+	for (unsigned int i = 0; i < length; i++) {
+		Drivers::Word tempWord;
+		tempWord.letter1 = 255;
+		tempWord.letter2 = 255;
+		writeWords.push_back(tempWord);
+	}
+	CSC322_fwrite(writeWords, fat.getCSC322FILE(0));
 }
 
 //------------------------------------------------------------------------------------

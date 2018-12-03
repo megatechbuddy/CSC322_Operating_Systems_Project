@@ -20,6 +20,7 @@ public:
 	unsigned int FileLimitPerSector = 10;
 	FAT();
 	void AddFile(CSC322FILE file);
+	void InitializeFAT(CSC322FILE file);
 	CSC322FILE getCSC322FILE(unsigned int filenumber);
 	~FAT();
 

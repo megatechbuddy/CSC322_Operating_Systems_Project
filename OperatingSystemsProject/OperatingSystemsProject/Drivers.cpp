@@ -5,6 +5,8 @@
 Drivers::Drivers()
 {
 	Initialize();
+
+	//EraseAllSectors();
 }
 
 void Drivers::StartIO() {
@@ -15,16 +17,15 @@ void Drivers::StopIO() {
 }
 
 void Drivers::EraseAllSectors() {
-	file.open(fileName);
 	for (unsigned int i = 0; i < TotalSectorsOfMemory; i++)
 	{
 		EraseSector(i);
 	}
-	file.close();
 }
 
 void Drivers::EraseSector(unsigned int nSectorNr) {
 	if (nSectorNr >= 0 && nSectorNr < TotalSectorsOfMemory) {
+		file.open(fileName, ios::out);
 		unsigned int beginning = SectorSize * nSectorNr;
 		unsigned int end = SectorSize * nSectorNr + SectorSize;
 		file.seekp(beginning);
@@ -32,6 +33,8 @@ void Drivers::EraseSector(unsigned int nSectorNr) {
 		{
 			file.write(reinterpret_cast<char*>(&emptyByte), 1);
 		}
+		file.close();
+		std::cout << "Erase Sector: "<<nSectorNr<<"\n";
 	}
 	else {
 		std::cout << "Incorrect input for EraseSector\n";
@@ -58,9 +61,9 @@ Drivers::Word Drivers::ReadWord(unsigned int wordAddress) {
 		char holderVariable;
 		file.read(&holderVariable, 1);
 		Word word;
-		word.letter1 = (unsigned char)holderVariable;
+		word.letter1 = holderVariable - 138;
 		file.read(&holderVariable, 1);
-		word.letter2 = (unsigned char)holderVariable;
+		word.letter2 = holderVariable - 138;
 		std::cout << "Word Binary at " << wordAddress << ": " << word.letter1 << word.letter2 << "\n";
 		return word;
 	}
@@ -68,7 +71,7 @@ Drivers::Word Drivers::ReadWord(unsigned int wordAddress) {
 		Word word;
 		word.letter1 = 255;
 		word.letter2 = 255;
-		std::cout << "Please use a valid wordAddress instead of " << wordAddress << "\n";
+//		std::cout << "Please use a valid wordAddress instead of " << wordAddress << "\n";
 		return word;
 	}
 }

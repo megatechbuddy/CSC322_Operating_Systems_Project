@@ -19,7 +19,7 @@ public:
 	int CSC322_fwrite(std::vector<Drivers::Word> words, FAT::CSC322FILE fileInformation); //Writes count of objects from the given array buffer to the output stream stream.
 	int CSC322_fseek(long offset, int origin); //moves the pointer to the files beginning
 	long CSC322_ftell(); //Returns the current value of the position indicator of the stream
-	int CSC322_remove(const char *path); //removes file
+	void CSC322_remove(FAT::CSC322FILE fileInformation); //removes file
 	void CreateMemoryStructure();
 	void CreateFileAllocationTables();
 	void InitializeAllBlocks();

@@ -24,7 +24,7 @@ public:
 	void InitializeTailOnBlock(unsigned int previousBlockNumber);
 	std::vector<Drivers::Word> GetAllDataWordsFromBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber);
 	void PutAllDataWordsInBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber, std::vector<Drivers::Word> words);
-	__int16 GetNextBlockLocationFromTail();
+	__int16 GetNextBlockLocationFromTail(unsigned int currentSectorNumber, unsigned int currentBlockNumber);
 	unsigned int GetStartLocationOfBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber);
 	unsigned int GetEndLocationOfBlock(unsigned int currentSectorNumber, unsigned int currentBlockNumber);
 	Drivers::Word convert_int16_to_word(__int16 __int16_number);
