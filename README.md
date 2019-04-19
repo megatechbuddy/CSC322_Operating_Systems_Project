@@ -9,3 +9,4 @@ This operating system modifies a binary file to use blocks, a file allocation ta
 - FAT (File Allocation Table)
 - Sectors
 - How to work as a software engineering team.
+- How to save and open files.
